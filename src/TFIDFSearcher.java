@@ -6,106 +6,105 @@ import java.util.*;
 
 public class TFIDFSearcher extends Searcher
 {
-	String[] termsArray;	/** Implemented */
-	double[] TermIDF;		/** Implemented */
-	double[][] DocVector;
+    public HashSet<String> vocabulary = new HashSet<>();
+    public HashMap<String, Double> IDF = new HashMap<>();
 
-	public TFIDFSearcher(String docFilename) {
-		super(docFilename);
-		/************* YOUR CODE HERE ******************/
 
-		Set<String> terms = new HashSet<>();
-		for (Document document: documents){
-			terms.addAll(document.getTokens());
-		}
-		termsArray = terms.toArray(new String[terms.size()]);
-		TermIDF = new double[termsArray.length];
-		double[][] TermTF = new double[termsArray.length][documents.size()];
-		DocVector = new double[termsArray.length][documents.size()];
+    public TFIDFSearcher(String docFilename) {
+        super(docFilename);
+        /************* YOUR CODE HERE ******************/
 
-		/** Computing TF&IDF for each term in documents */
-		for (int i=0; i<termsArray.length; i++){
-			int IDF_count=0;
-			for (int j=0; j<documents.size(); j++){
-				int TF_count=0;
-				if (documents.get(j).getTokens().contains(termsArray[i])) IDF_count++;
-				for (String token: documents.get(j).getTokens()){
-					if (termsArray[i].equals(token)) TF_count++;
-				}
-				if (TF_count == 0) TermTF[i][j] = 0.0;
-				else TermTF[i][j] = 1 + Math.log10(TF_count);
-			}
-			TermIDF[i] = Math.log10(1 + ((double) documents.size() / (double) IDF_count));
-		}
+        HashMap<String, Set<Integer>> DocFreq = new HashMap<>();
 
-		for (int i=0; i<termsArray.length; i++){
-			for (int j=0; j<documents.size(); j++){
-				DocVector[i][j] = TermIDF[i] * TermTF[i][j];
-			}
-		}
-		/***********************************************/
-	}
+        for(Document doc: documents) {
+            for(String term : doc.getTokens()) {
+                vocabulary.add(term);
+                if (!DocFreq.containsKey(term)) DocFreq.put(term, new HashSet<>());
+                DocFreq.get(term).add(doc.getId());
+            }
+        }
+        for(String term: DocFreq.keySet()) {
+            IDF.put(term, Math.log10(1.0 +  ((double) documents.size() / (double) DocFreq.get(term).size())));
+        }
 
-	@Override
-	public List<SearchResult> search(String queryString, int k) {
-		/************* YOUR CODE HERE ******************/
+        /***********************************************/
+    }
 
-		List<String> queries = tokenize(queryString);
-		double[] QueryVector = new double[termsArray.length];
-		List<SearchResult> searchResultList = new ArrayList<>();
+    @Override
+    public List<SearchResult> search(String queryString, int k) {
+        /************* YOUR CODE HERE ******************/
 
-		/** Computing TF for query & create a Query vector*/
-		for (int i=0; i<termsArray.length; i++){
-			int TF_count=0;
-			for (String query: queries){
-				if (query.equals(termsArray[i])) TF_count++;
-			}
-			double QueryTF;
-			if (TF_count == 0) QueryTF = 0.0;
-			else QueryTF = 1 + Math.log10(TF_count);
-			QueryVector[i] = TermIDF[i] * QueryTF;
-		}
+        List<String> Queries = Searcher.tokenize(queryString);
+        Map<String, Double> qVec = new HashMap<>();
+        List<SearchResult> searchResultList = new ArrayList<>();
 
-		/** Computing scores using cosine similarity technique for each document*/
-		for (int i=0; i<DocVector[0].length; i++){
-			double sum_DmulQ=0, sum_Qsquare=0, sum_Dsquare=0;
-			for (int j=0; j<DocVector.length; j++){
-				sum_DmulQ += (QueryVector[j] * DocVector[j][i]);
-				sum_Qsquare += Math.pow(QueryVector[j], 2);
-				sum_Dsquare += Math.pow(DocVector[j][i], 2);
-			}
-			double score = sum_DmulQ / (Math.sqrt(sum_Qsquare) * Math.sqrt(sum_Dsquare));
-			searchResultList.add(new SearchResult(documents.get(i), score));
-		}
+        for(String query: Queries) {
+            int qFreq = 0;
+            vocabulary.add(query);
+            for(Document document: documents) {
+                if(document.getTokens().contains(query)) {
+                    qFreq++;
+                }
+            }
+            IDF.put(query, Math.log10(1.0 + ( (double) documents.size() / (double) qFreq)));
+        }
 
-		/** Sorting searchResultList by score*/
-		int n = searchResultList.size();
-		List<SearchResult> sortedSearchResultList = new ArrayList<>();
-		for(int i=0; i<n; i++){
-			for(int j=1; j<(n-i); j++){
-				if(searchResultList.get(j-1).getScore() >= searchResultList.get(j).getScore()){
-					if (searchResultList.get(j-1).getScore() == searchResultList.get(j).getScore()){
-						if (searchResultList.get(j-1).getDocument().getId() < searchResultList.get(j).getDocument().getId()){
-							Collections.swap(searchResultList,j-1,j);
-						}
-					}
-					else{
-						Collections.swap(searchResultList,j-1,j);
-					}
-				}
-				if (Double.isNaN(searchResultList.get(j-1).getScore()) && Double.isNaN(searchResultList.get(j).getScore())){
-					if (searchResultList.get(j-1).getDocument().getId() < searchResultList.get(j).getDocument().getId()){
-						Collections.swap(searchResultList,j-1,j);
-					}
-				}
+        for(String term: vocabulary) {
+            double freq, TF;
+            freq = Collections.frequency(Queries, term);
+            if(freq == 0) TF = 0.0;
+            else TF = 1 + Math.log10(freq);
+            qVec.put(term, TF * IDF.get(term));
+        }
 
-			}
-			sortedSearchResultList.add(searchResultList.get(n-i-1));
-		}
-		if (k >= sortedSearchResultList.size()) return sortedSearchResultList;
-		else return sortedSearchResultList.subList(0,k);
-		/***********************************************/
-	}
+        for(Document document : documents) {
+            Set<String> union = new HashSet<>();
+            union.addAll(document.getTokens());
+            union.addAll(Queries);
+
+            double w, sum_DmulQ = 0, sum_Qsquare = 0, sum_Dsquare = 0;
+
+            for(String term: union) {
+
+                double freq, TF_D;
+                freq = Collections.frequency(document.getTokens(), term);
+                if(freq == 0) TF_D = 0.0;
+                else TF_D = 1.0 + Math.log10(freq);
+
+                w = TF_D * IDF.get(term);
+                sum_DmulQ += w * qVec.get(term);
+                sum_Qsquare += Math.pow(qVec.get(term),2.0);
+                sum_Dsquare += Math.pow(w,2.0);
+            }
+            double score = sum_DmulQ / (Math.sqrt(sum_Qsquare) * Math.sqrt(sum_Dsquare));
+            searchResultList.add(new SearchResult(document, score));
+        }
+
+        /** Sorting searchResultList by score*/
+        int n = searchResultList.size();
+        List<SearchResult> sortedSearchResultList = new ArrayList<>();
+        for(int i=0; i<n; i++){
+            for(int j=1; j<(n-i); j++){
+                if(searchResultList.get(j-1).getScore() >= searchResultList.get(j).getScore()){
+                    if (searchResultList.get(j-1).getScore() == searchResultList.get(j).getScore()){
+                        if (searchResultList.get(j-1).getDocument().getId() < searchResultList.get(j).getDocument().getId()){
+                            Collections.swap(searchResultList,j-1,j);
+                        }
+                    }
+                    else{
+                        Collections.swap(searchResultList,j-1,j);
+                    }
+                }
+                if (Double.isNaN(searchResultList.get(j-1).getScore()) && Double.isNaN(searchResultList.get(j).getScore())){
+                    if (searchResultList.get(j-1).getDocument().getId() < searchResultList.get(j).getDocument().getId()){
+                        Collections.swap(searchResultList,j-1,j);
+                    }
+                }
+            }
+            sortedSearchResultList.add(searchResultList.get(n-i-1));
+        }
+        if (k >= sortedSearchResultList.size()) return sortedSearchResultList;
+        else return sortedSearchResultList.subList(0,k);
+        /***********************************************/
+    }
 }
-
-

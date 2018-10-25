@@ -69,18 +69,26 @@ public class SearcherEvaluator {
 	{
 		/*********************** YOUR CODE HERE *************************/
 
+		List<SearchResult> searchResults = searcher.search(query.getRawText(), k);
+		Set<Integer> R = new HashSet<>();
+		for (SearchResult searchResult: searchResults){
+			R.add(searchResult.getDocument().getId());
+		}
+		Set<Integer> G = new HashSet<>();
+		for (Integer qID: answers.keySet()){
+			G.addAll(answers.get(qID));
+		}
+		Set<Integer> Intersection = new HashSet<>(R);
+		Intersection.retainAll(G);
 
+		double Precision = (double) Intersection.size() / (double) R.size();
+		if (Double.isNaN(Precision)) Precision = 0;
+		double Recall = (double) Intersection.size() / (double) G.size();
+		if (Double.isNaN(Recall)) Recall = 0;
+		double F1 = (2 * Precision * Recall) / (Precision + Recall);
+		if (Double.isNaN(F1)) F1 = 0;
 
-
-
-
-
-
-
-
-
-
-		return null;
+		return new double[]{Precision, Recall, F1};
 		/****************************************************************/
 	}
 	
@@ -94,7 +102,29 @@ public class SearcherEvaluator {
 	public double[] getAveragePRF(Searcher searcher, int k)
 	{
 		/*********************** YOUR CODE HERE *************************/
-		return null;
+
+		List<List<Double>> PRF = new ArrayList<>();
+		for (Document query: queries){
+			double[] prf = getQueryPRF(query, searcher, k);
+			List<Double> list = new ArrayList<>();
+			for (int i=0; i<prf.length; i++) list.add(prf[i]);
+			PRF.add(list);
+		}
+
+		double sumP=0, sumR=0, sumF=0;
+		for (List<Double> list: PRF){
+			sumP += list.get(0);
+			sumR += list.get(1);
+			sumF += list.get(2);
+
+		}
+
+		double avgP, avgR, avgF;
+		avgP = sumP / queries.size();
+		avgR = sumR / queries.size();
+		avgF = sumF / queries.size();
+
+		return new double[]{avgP, avgR, avgF};
 		/****************************************************************/
 	}
 }

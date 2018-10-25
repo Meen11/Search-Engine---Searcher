@@ -112,10 +112,10 @@ public class StudentTester {
 	public static void main(String[] args)
 	{	
 		/********************* Uncomment test cases you want to test ***************/
-//		testJaccardSearcher(testCorpus);
+		testJaccardSearcher(testCorpus);
 		testTFIDFSearcher(testCorpus);
-		//testCompareTwoSearchersOnSomeQueries(testCorpus);
-		//testCompareTwoSearchersOnAllQueries(testCorpus);
+		testCompareTwoSearchersOnSomeQueries(testCorpus);
+		testCompareTwoSearchersOnAllQueries(testCorpus);
 		
 		//********** BONUS **************//
 		//testYourSearcher(testCorpus);
