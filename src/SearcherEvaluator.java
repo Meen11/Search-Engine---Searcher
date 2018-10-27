@@ -78,7 +78,6 @@ public class SearcherEvaluator {
 		G.addAll(answers.get(query.getId()));
 		Set<Integer> Intersection = new HashSet<>(R);
 		Intersection.retainAll(G);
-
 		double Precision = (double) Intersection.size() / (double) R.size();
 		if (Double.isNaN(Precision)) Precision = 0;
 		double Recall = (double) Intersection.size() / (double) G.size();
@@ -117,10 +116,9 @@ public class SearcherEvaluator {
 
 		}
 
-		double avgP, avgR, avgF;
-		avgP = sumP / queries.size();
-		avgR = sumR / queries.size();
-		avgF = sumF / queries.size();
+		double avgP = sumP / queries.size();
+		double avgR = sumR / queries.size();
+		double avgF = sumF / queries.size();
 
 		return new double[]{avgP, avgR, avgF};
 		/****************************************************************/

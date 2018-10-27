@@ -47,7 +47,9 @@ public class TFIDFSearcher extends Searcher
                     qFreq++;
                 }
             }
-            IDF.put(query, Math.log10(1.0 + ( (double) documents.size() / (double) qFreq)));
+            if (qFreq != 0) IDF.put(query, Math.log10(1.0 + ( (double) documents.size() / (double) qFreq)));
+            else IDF.put(query, 0.0);
+
         }
 
         /**Creating Query vector*/
@@ -106,6 +108,7 @@ public class TFIDFSearcher extends Searcher
             }
             sortedSearchResultList.add(searchResultList.get(n-i-1));
         }
+
         if (k > sortedSearchResultList.size()) return sortedSearchResultList;
         else return sortedSearchResultList.subList(0,k);
         /***********************************************/
