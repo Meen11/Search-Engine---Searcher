@@ -1,23 +1,24 @@
-//Name: 
-//Section: 
-//ID: 
+//Name: Ravikan T., Pranpariya S., Pawin S.
+//Section: 1
+//ID: 5988046, 5988202, 5988222
 
 import java.util.*;
 
 public class JaccardSearcher extends Searcher{
 
+	Map<Integer, Document> docID_map = new HashMap<>();
 	Map<Integer, Set<String>> docMap = new HashMap<>(); /** Implemented */
 
 	public JaccardSearcher(String docFilename) {
 		super(docFilename);
-		/************* YOUR CODE HERE ******************/
 
+		/************* YOUR CODE HERE ******************/
 		for (Document document: documents){
 			Set<String> tokens = new HashSet<>();
 			tokens.addAll(document.getTokens());
 			docMap.put(document.getId(), tokens);
+			docID_map.put(document.getId(), document);
 		}
-
 		/***********************************************/
 	}
 
@@ -36,7 +37,7 @@ public class JaccardSearcher extends Searcher{
 			intersectSet.retainAll(querySet);
 			unionSet.addAll(querySet);
 			double score = (double) intersectSet.size() / (double) unionSet.size();
-			searchResultList.add(new SearchResult(documents.get(docID-1), score));
+			searchResultList.add(new SearchResult(docID_map.get(docID), score));
 		}
 
 		/** Sorting searchResultList by score*/
