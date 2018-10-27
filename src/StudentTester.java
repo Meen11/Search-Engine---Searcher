@@ -2,6 +2,9 @@
 //Section: 1
 //ID: 5988046, 5988202, 5988222
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -99,28 +102,28 @@ public class StudentTester {
 		SearcherEvaluator s = new SearcherEvaluator(corpus);
 		Searcher jSearcher = new JaccardSearcher(testCorpus+"/documents.txt");
 		Searcher tSearcher = new TFIDFSearcher(testCorpus+"/documents.txt");
-//		try {																							/**Implemented for making a report*/
-//			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("result.csv"));	/**Implemented */
-//			for (int i = 0; i < 50; i++) {            													/**Implemented */
-//				k = i + 1;																				/**Implemented */
-//				System.out.printf("k = " + k + "\n");													/**Implemented */
+		try {																							/**Implemented for making a report*/
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("result.csv"));	/**Implemented */
+			for (int i = 0; i < 50; i++) {            													/**Implemented */
+				k = i + 1;																				/**Implemented */
+				System.out.printf("k = " + k + "\n");													/**Implemented */
 		double[] jResults = s.getAveragePRF(jSearcher, k);
 		double[] tResults = s.getAveragePRF(tSearcher, k);
-//				String r1 = Arrays.toString(jResults);													/**Implemented */
-//				String r2 = Arrays.toString(tResults);													/**Implemented */
-//				r1 = r1.substring(1, r1.length()-1);													/**Implemented */
-//				r2 = r2.substring(1, r2.length()-1);													/**Implemented */
-//				if (k == 1 ) bufferedWriter.write("Jaccard_PRF,TFIDF_PRF\n");						/**Implemented */
-//				bufferedWriter.write(r1+","+r2+"\n");													/**Implemented */
+				String r1 = Arrays.toString(jResults);													/**Implemented */
+				String r2 = Arrays.toString(tResults);													/**Implemented */
+				r1 = r1.substring(1, r1.length()-1);													/**Implemented */
+				r2 = r2.substring(1, r2.length()-1);													/**Implemented */
+				if (k == 1 ) bufferedWriter.write("Jaccard_PRF,TFIDF_PRF\n");						/**Implemented */
+				bufferedWriter.write(r1+","+r2+"\n");													/**Implemented */
 		System.out.println("@@@ Jaccard: " + Arrays.toString(jResults));
 		System.out.println("@@@ TFIDF: " + Arrays.toString(tResults));
 		long endTime = System.currentTimeMillis();
 		System.out.println("@@@ Total time used: " + (endTime - startTime) + " milliseconds.");
-//			}																							/**Implemented */
-//			bufferedWriter.close();																		/**Implemented */
-//		} catch (IOException e){																		/**Implemented */
-//			e.printStackTrace();																		/**Implemented */
-//		}																								/**Implemented */
+			}																							/**Implemented */
+			bufferedWriter.close();																		/**Implemented */
+		} catch (IOException e){																		/**Implemented */
+			e.printStackTrace();																		/**Implemented */
+		}																								/**Implemented */
 	}
 
 	public static void testYourSearcher(String corpus)
@@ -131,9 +134,9 @@ public class StudentTester {
 	public static void main(String[] args)
 	{
 		/********************* Uncomment test cases you want to test ***************/
-		testJaccardSearcher(testCorpus);
-		testTFIDFSearcher(testCorpus);
-		testCompareTwoSearchersOnSomeQueries(testCorpus);
+//		testJaccardSearcher(testCorpus);
+//		testTFIDFSearcher(testCorpus);
+//		testCompareTwoSearchersOnSomeQueries(testCorpus);
 		testCompareTwoSearchersOnAllQueries(testCorpus);
 
 		//********** BONUS **************//
