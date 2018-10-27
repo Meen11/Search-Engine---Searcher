@@ -11,19 +11,19 @@ import java.util.List;
  *
  */
 public class StudentTester {
-	
+
 	//*********************** DO NOT MIDIFY THESE VARIABLES *****************************//
 	public static final String testCorpus = "./data/lisa";
 	public static int k = 10;		/**Implemented for making  a report*/
 	public static final String[] testQueries = new String[] {
-			""
-			,"Information Retrieval"
-			,"Machine Learning"
-			,"Deep Learning"
-			,"I AM INTERESTED IN INFORMATION ON THE PROVISION OF CURRENT AWARENESS BULLETINS, ESPECIALLY SDI SERVICES IN ANY INSTITUTION, E.G. ACADEMIC LIBRARIES, INDUSTRY, AND IN ANY SUBJECT FIELD. SDI, SELECTIVE DISSEMINATION OF INFORMATION, CURRENT AWARENESS BULLETINS, INFORMATION BULLETINS."
-			,"THE WHITE HOUSE CONFERENCE ON LIBRARY AND INFORMATION SERVICES, 1979. SUMMARY, MARCH 1980. FOR AN ABSTRACT OF THIS REPORT SEE 81/795. REPORT NOT AVAILABLE FROM NTIS."
-	};
-	
+					""
+					,"Information Retrieval"
+					,"Machine Learning"
+					,"Deep Learning"
+					,"I AM INTERESTED IN INFORMATION ON THE PROVISION OF CURRENT AWARENESS BULLETINS, ESPECIALLY SDI SERVICES IN ANY INSTITUTION, E.G. ACADEMIC LIBRARIES, INDUSTRY, AND IN ANY SUBJECT FIELD. SDI, SELECTIVE DISSEMINATION OF INFORMATION, CURRENT AWARENESS BULLETINS, INFORMATION BULLETINS."
+					,"THE WHITE HOUSE CONFERENCE ON LIBRARY AND INFORMATION SERVICES, 1979. SUMMARY, MARCH 1980. FOR AN ABSTRACT OF THIS REPORT SEE 81/795. REPORT NOT AVAILABLE FROM NTIS."
+			};
+
 	//*********************** DO NOT MIDIFY THIS METHOD *****************************//
 	public static void testJaccardSearcher(String corpus)
 	{
@@ -39,11 +39,11 @@ public class StudentTester {
 			Searcher.displaySearchResults(results);
 			System.out.println();
 		}
-		
+
 		long endTime = System.currentTimeMillis();
 		System.out.println("@@@ Total time used: "+(endTime-startTime)+" milliseconds.");
 	}
-	
+
 	//*********************** DO NOT MIDIFY THIS METHOD *****************************//
 	public static void testTFIDFSearcher(String corpus)
 	{
@@ -59,11 +59,11 @@ public class StudentTester {
 			Searcher.displaySearchResults(results);
 			System.out.println();
 		}
-		
+
 		long endTime = System.currentTimeMillis();
 		System.out.println("@@@ Total time used: "+(endTime-startTime)+" milliseconds.");
 	}
-	
+
 	//*********************** DO NOT MIDIFY THIS METHOD *****************************//
 	public static void testCompareTwoSearchersOnSomeQueries(String corpus)
 	{
@@ -72,12 +72,12 @@ public class StudentTester {
 		SearcherEvaluator eval = new SearcherEvaluator(testCorpus);
 		Searcher jSearcher = new JaccardSearcher(testCorpus+"/documents.txt");
 		Searcher tSearcher = new TFIDFSearcher(testCorpus+"/documents.txt");
-		
+
 		int[] qIndexes = new int[3];
 		qIndexes[0] = 0;
 		qIndexes[1] = eval.getQueries().size()/2;
 		qIndexes[2] = eval.getQueries().size()-1;
-		
+
 		for(int qIndex: qIndexes)
 		{
 			System.out.println("@@@ Query: "+eval.getQueries().get(qIndex));
@@ -86,11 +86,11 @@ public class StudentTester {
 			System.out.println("\tJaccard (P,R,F): "+Arrays.toString(jResults));
 			System.out.println("\tTFIDF (P,R,F): "+Arrays.toString(tResults));
 		}
-		
+
 		long endTime = System.currentTimeMillis();
 		System.out.println("@@@ Total time used: "+(endTime-startTime)+" milliseconds.");
 	}
-	
+
 	//*********************** DO NOT MIDIFY THIS METHOD *****************************//
 	public static void testCompareTwoSearchersOnAllQueries(String corpus)
 	{
@@ -104,38 +104,38 @@ public class StudentTester {
 //			for (int i = 0; i < 50; i++) {            													/**Implemented */
 //				k = i + 1;																				/**Implemented */
 //				System.out.printf("k = " + k + "\n");													/**Implemented */
-				double[] jResults = s.getAveragePRF(jSearcher, k);
-				double[] tResults = s.getAveragePRF(tSearcher, k);
+		double[] jResults = s.getAveragePRF(jSearcher, k);
+		double[] tResults = s.getAveragePRF(tSearcher, k);
 //				String r1 = Arrays.toString(jResults);													/**Implemented */
 //				String r2 = Arrays.toString(tResults);													/**Implemented */
 //				r1 = r1.substring(1, r1.length()-1);													/**Implemented */
 //				r2 = r2.substring(1, r2.length()-1);													/**Implemented */
 //				if (k == 1 ) bufferedWriter.write("Jaccard_PRF,TFIDF_PRF\n");						/**Implemented */
 //				bufferedWriter.write(r1+","+r2+"\n");													/**Implemented */
-				System.out.println("@@@ Jaccard: " + Arrays.toString(jResults));
-				System.out.println("@@@ TFIDF: " + Arrays.toString(tResults));
-				long endTime = System.currentTimeMillis();
-				System.out.println("@@@ Total time used: " + (endTime - startTime) + " milliseconds.");
+		System.out.println("@@@ Jaccard: " + Arrays.toString(jResults));
+		System.out.println("@@@ TFIDF: " + Arrays.toString(tResults));
+		long endTime = System.currentTimeMillis();
+		System.out.println("@@@ Total time used: " + (endTime - startTime) + " milliseconds.");
 //			}																							/**Implemented */
 //			bufferedWriter.close();																		/**Implemented */
 //		} catch (IOException e){																		/**Implemented */
 //			e.printStackTrace();																		/**Implemented */
 //		}																								/**Implemented */
 	}
-	
+
 	public static void testYourSearcher(String corpus)
 	{
 		//YOUR CODE HERE (BONUS)
 	}
-	
+
 	public static void main(String[] args)
-	{	
+	{
 		/********************* Uncomment test cases you want to test ***************/
 		testJaccardSearcher(testCorpus);
-//		testTFIDFSearcher(testCorpus);
-//		testCompareTwoSearchersOnSomeQueries(testCorpus);
-//		testCompareTwoSearchersOnAllQueries(testCorpus);
-		
+		testTFIDFSearcher(testCorpus);
+		testCompareTwoSearchersOnSomeQueries(testCorpus);
+		testCompareTwoSearchersOnAllQueries(testCorpus);
+
 		//********** BONUS **************//
 		//testYourSearcher(testCorpus);
 		//*******************************//

@@ -11,7 +11,7 @@ import java.util.*;
 public class SearcherEvaluator {
 	private List<Document> queries = null;				//List of test queries. Each query can be treated as a Document object.
 	private  Map<Integer, Set<Integer>> answers = null;	//Mapping between query ID and a set of relevant document IDs
-	
+
 	public List<Document> getQueries() {
 		return queries;
 	}
@@ -30,8 +30,8 @@ public class SearcherEvaluator {
 	{
 		String queryFilename = corpus+"/queries.txt";
 		String answerFilename = corpus+"/relevance.txt";
-		
-		//load queries. Treat each query as a document. 
+
+		//load queries. Treat each query as a document.
 		this.queries = Searcher.parseDocumentFromFile(queryFilename);
 		this.answers = new HashMap<Integer, Set<Integer>>();
 		//load answers
@@ -54,11 +54,11 @@ public class SearcherEvaluator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
-	 * Returns an array of 3 numbers: precision, recall, F1, computed from the top *k* search results 
+	 * Returns an array of 3 numbers: precision, recall, F1, computed from the top *k* search results
 	 * returned from *searcher* for *query*
 	 * @param query
 	 * @param searcher
@@ -75,9 +75,7 @@ public class SearcherEvaluator {
 			R.add(searchResult.getDocument().getId());
 		}
 		Set<Integer> G = new HashSet<>();
-		for (Integer qID: answers.keySet()){
-			G.addAll(answers.get(qID));
-		}
+		G.addAll(answers.get(query.getId()));
 		Set<Integer> Intersection = new HashSet<>(R);
 		Intersection.retainAll(G);
 
@@ -91,10 +89,10 @@ public class SearcherEvaluator {
 		return new double[]{Precision, Recall, F1};
 		/****************************************************************/
 	}
-	
+
 	/**
 	 * Test all the queries in *queries*, from the top *k* search results returned by *searcher*
-	 * and take the average of the precision, recall, and F1. 
+	 * and take the average of the precision, recall, and F1.
 	 * @param searcher
 	 * @param k
 	 * @return

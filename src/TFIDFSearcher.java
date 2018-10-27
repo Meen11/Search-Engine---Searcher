@@ -38,6 +38,7 @@ public class TFIDFSearcher extends Searcher
         Map<String, Double> qVec = new HashMap<>();
         List<SearchResult> searchResultList = new ArrayList<>();
 
+        /**Adding IDF of terms in query to IDF*/
         for(String query: Queries) {
             int qFreq = 0;
             vocabulary.add(query);
@@ -49,24 +50,26 @@ public class TFIDFSearcher extends Searcher
             IDF.put(query, Math.log10(1.0 + ( (double) documents.size() / (double) qFreq)));
         }
 
+        /**Creating Query vector*/
         for(String term: vocabulary) {
-            double freq, TF;
+            double TF;
+            int freq;
             freq = Collections.frequency(Queries, term);
-            if(freq == 0) TF = 0.0;
+            if(freq == 0) TF = 0;
             else TF = 1 + Math.log10(freq);
             qVec.put(term, TF * IDF.get(term));
         }
 
+        /**Calculating the cosine similarity*/
         for(Document document : documents) {
-            Set<String> union = new HashSet<>();
-            union.addAll(document.getTokens());
+            Set<String> union = new TreeSet<>(document.getTokens());
             union.addAll(Queries);
 
-            double w, sum_DmulQ = 0, sum_Qsquare = 0, sum_Dsquare = 0;
+            double w, sum_DmulQ = 0.0, sum_Qsquare = 0.0, sum_Dsquare = 0.0;
 
             for(String term: union) {
-
-                double freq, TF_D;
+                double TF_D;
+                int freq;
                 freq = Collections.frequency(document.getTokens(), term);
                 if(freq == 0) TF_D = 0.0;
                 else TF_D = 1.0 + Math.log10(freq);
@@ -103,7 +106,7 @@ public class TFIDFSearcher extends Searcher
             }
             sortedSearchResultList.add(searchResultList.get(n-i-1));
         }
-        if (k >= sortedSearchResultList.size()) return sortedSearchResultList;
+        if (k > sortedSearchResultList.size()) return sortedSearchResultList;
         else return sortedSearchResultList.subList(0,k);
         /***********************************************/
     }
