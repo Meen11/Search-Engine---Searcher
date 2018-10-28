@@ -6,9 +6,8 @@ import java.util.*;
 
 public class TFIDFSearcher extends Searcher
 {
-    public HashSet<String> vocabulary = new HashSet<>();
+    public HashSet<String> terms = new HashSet<>();
     public HashMap<String, Double> IDF = new HashMap<>();
-
 
     public TFIDFSearcher(String docFilename) {
         super(docFilename);
@@ -18,7 +17,7 @@ public class TFIDFSearcher extends Searcher
 
         for(Document doc: documents) {
             for(String term : doc.getTokens()) {
-                vocabulary.add(term);
+                terms.add(term);
                 if (!DocFreq.containsKey(term)) DocFreq.put(term, new HashSet<>());
                 DocFreq.get(term).add(doc.getId());
             }
@@ -41,7 +40,7 @@ public class TFIDFSearcher extends Searcher
         /**Adding IDF of terms in query to IDF*/
         for(String query: Queries) {
             int qFreq = 0;
-            vocabulary.add(query);
+            terms.add(query);
             for(Document document: documents) {
                 if(document.getTokens().contains(query)) {
                     qFreq++;
@@ -53,7 +52,7 @@ public class TFIDFSearcher extends Searcher
         }
 
         /**Creating Query vector*/
-        for(String term: vocabulary) {
+        for(String term: terms) {
             double TF;
             int freq;
             freq = Collections.frequency(Queries, term);

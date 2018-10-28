@@ -133,8 +133,8 @@ public class StudentTester {
 		/********************* Uncomment test cases you want to test ***************/
 //		testJaccardSearcher(testCorpus);
 //		testTFIDFSearcher(testCorpus);
-//		testCompareTwoSearchersOnSomeQueries(testCorpus);
-		testCompareTwoSearchersOnAllQueries(testCorpus);
+		testCompareTwoSearchersOnSomeQueries(testCorpus);
+//		testCompareTwoSearchersOnAllQueries(testCorpus);
 
 		//********** BONUS **************//
 		//testYourSearcher(testCorpus);

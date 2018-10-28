@@ -75,7 +75,7 @@ public class SearcherEvaluator {
 			R.add(searchResult.getDocument().getId());
 		}
 		Set<Integer> G = new HashSet<>();
-		G.addAll(answers.get(query.getId()));
+		G.addAll(getAnswers().get(query.getId()));
 		Set<Integer> Intersection = new HashSet<>(R);
 		Intersection.retainAll(G);
 		double Precision = (double) Intersection.size() / (double) R.size();
